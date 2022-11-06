@@ -17,8 +17,8 @@ void errorExit(char err[]){
 
 int main(void){
     int fd;
-    char str[] = "Обмен данными через именнованный канал";
-    char buff[256];
+    char str[] = "Обмен данными через именнованный канал\n";
+    char buff[100];
     pid_t pid;
 
     unlink("canal"); 
@@ -34,8 +34,7 @@ int main(void){
         
         if((fd = open("canal", O_WRONLY)) == -1)
             errorExit("open");
-            
-        write(fd, str, strlen(str));    
+        write(fd, str, sizeof(str));    
         close(fd);
 
         exit(EXIT_SUCCESS);
@@ -51,7 +50,7 @@ int main(void){
         if(read(fd, buff, sizeof(buff)) == -1)
             errorExit("read");
            
-        printf("Прочитано из fifo: %s\n", buff);
+        printf("Прочитано из fifo: %s", buff);
         close(fd);
 
         exit(EXIT_SUCCESS);
