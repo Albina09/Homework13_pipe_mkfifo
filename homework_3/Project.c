@@ -13,18 +13,14 @@ void errorExit(char err[]){
     exit(EXIT_FAILURE);
 }
 
-int main(void){
-    pid_t pid;
+int main(){
+    pid_t pid, pid2;
     int fd[2];
-    char *argv[2];
+    char *argv[4];
     argv[0] = "ls";
     argv[1] = "-la";
-    argv[2] = NULL;
-
-    char *argv2[2];
-    argv2[0] = "grep";
-    argv2[1] = "a*";
-    argv2[2] = NULL;
+    argv[2] = "tail";
+    argv[3] = "-1";
 
     if(pipe(fd) == -1)
         errorExit("pipe");
@@ -38,21 +34,19 @@ int main(void){
         close(fd[1]);
         dup2(fd[0],0);
         close(fd[0]);
-        
-        execvp(argv2[0],argv2);
+        execlp(argv[2], argv[2], argv[3],(char*) NULL);
 	    exit(EXIT_SUCCESS);
         
     }else{
-        pid = fork();
+        pid2 = fork();
         
-        if (pid == 0){
+        if (pid2 == 0){
             close(fd[0]);
             
             dup2(fd[1],1);
             
             close(fd[1]);
-            execvp(argv[0], argv);
-
+            execlp(argv[0],argv[0],argv[1],(char*) NULL); 
             exit(EXIT_SUCCESS);
 
         }else{
